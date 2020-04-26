@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chat.qs.mapper.CityMapper">
+
+	<resultMap id="baseResultMap" type="com.chat.qs.entity.City">
+	    <result column="id" property="id"/>
+	    <result column="name" property="name"/>
+	</resultMap>
+
+	<sql id="baseColumn">
+	    id,
+	    name
+	</sql>
+
+	<sql id="baseCondition">
+		<where>
+		    <if test="id != null"> and id = #{id}</if>
+		    <if test="name != null"> and name = #{name}</if>
+		</where>
+	</sql>
+
+	<select id="selectList" resultMap="baseResultMap" parameterType="com.chat.qs.vo.CityVo">
+		SELECT <include refid="baseColumn"></include>
+		from qa_city
+		<include refid="baseCondition"></include>
+	</select>
+
+	<select id="selectOne" resultMap="baseResultMap" parameterType="com.chat.qs.vo.CityVo">
+		SELECT <include refid="baseColumn"></include>
+		from qa_city
+		<include refid="baseCondition"></include>
+	</select>
+
+	<insert id="insert" parameterType="com.chat.qs.entity.City">
+		insert into qa_city
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">id,</if>
+			<if test="name != null">name,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+		    <if test="id != null">#{id},</if>
+		    <if test="name != null">#{name},</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="com.chat.qs.entity.City">
+		update qa_city
+		<set>
+			<if test="id != null">id = #{id},</if>
+			<if test="name != null">name = #{name},</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.Long">
+		delete from qa_city
+		where id = #{id}
+	</delete>
+
+</mapper>

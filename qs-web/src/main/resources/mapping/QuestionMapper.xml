@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chat.qs.mapper.QuestionMapper">
+
+	<resultMap id="baseResultMap" type="com.chat.qs.entity.Question">
+	    <result column="id" property="id"/>
+	    <result column="title" property="title"/>
+	    <result column="type" property="type"/>
+	    <result column="create_time" property="createTime"/>
+	    <result column="del_flag" property="delFlag"/>
+	    <result column="cate_id" property="cateId"/>
+		<association property="category" javaType="com.chat.qs.entity.Category">
+			<result property="id" column="cate_id" />
+			<result property="name" column="name" />
+		</association>
+		<collection property="labelList" ofType="com.chat.qs.entity.Label">
+			<id property="id" column="label_id"/>
+			<result property="labelName" column="label_name"/>
+		</collection>
+	</resultMap>
+
+	<sql id="baseColumn">
+	    id,
+	    title,
+	    type,
+	    create_time,
+	    del_flag,
+	    cate_id
+	</sql>
+
+	<sql id="questionColumn">
+		q.id,
+		q.title,
+		q.type,
+		q.create_time,
+		q.del_flag,
+		q.cate_id,
+		l.id as label_id,
+		l.label_name
+	</sql>
+
+	<sql id="baseCondition">
+		<where>
+		    <if test="id != null"> and id = #{id}</if>
+		    <if test="title != null"> and title = #{title}</if>
+		    <if test="type != null"> and type = #{type}</if>
+		    <if test="createTime != null"> and create_time = #{createTime}</if>
+		    <if test="cateId != null"> and cate_id = #{cateId}</if>
+		    <if test="delFlag != null"> and del_flag = #{delFlag}</if>
+		</where>
+	</sql>
+
+	<sql id="questionCondition">
+		<where>
+			<if test="id != null"> and q.id = #{id}</if>
+			<if test="title != null"> and q.title = #{title}</if>
+			<if test="type != null"> and q.type = #{type}</if>
+			<if test="createTime != null"> and q.create_time = #{createTime}</if>
+			<if test="delFlag != null"> and q.del_flag = #{delFlag}</if>
+			<if test="cateId != null"> and q.cate_id = #{cateId}</if>
+		</where>
+	</sql>
+
+	<select id="selectList" resultMap="baseResultMap" parameterType="com.chat.qs.vo.QuestionVo">
+		SELECT <include refid="questionColumn"></include>
+		from qa_question q
+		LEFT JOIN qa_question_label ql ON q.id = ql.question_id
+		LEFT JOIN qa_label l ON l.id = ql.label_id
+		<include refid="questionCondition"></include>
+	</select>
+
+	<select id="selectOne" resultMap="baseResultMap" parameterType="com.chat.qs.vo.QuestionVo">
+		SELECT <include refid="baseColumn"></include>
+		from qa_question
+		<include refid="baseCondition"></include>
+	</select>
+
+	<insert id="insert" parameterType="com.chat.qs.entity.Question">
+		insert into qa_question
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">id,</if>
+			<if test="title != null">title,</if>
+			<if test="type != null">type,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="delFlag != null">del_flag,</if>
+			<if test="cateId != null">cate_id,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+		    <if test="id != null">#{id},</if>
+		    <if test="title != null">#{title},</if>
+		    <if test="type != null">#{type},</if>
+		    <if test="createTime != null">#{createTime},</if>
+		    <if test="delFlag != null">#{delFlag},</if>
+		    <if test="cateId != null">#{cateId},</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="com.chat.qs.entity.Question">
+		update qa_question
+		<set>
+			<if test="id != null">id = #{id},</if>
+			<if test="title != null">title = #{title},</if>
+			<if test="type != null">type = #{type},</if>
+
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="delFlag != null">del_flag = #{delFlag},</if>
+			<if test="cateId != null">cate_id = #{cateId},</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.Long">
+		delete from qa_question
+		where id = #{id}
+	</delete>
+
+</mapper>

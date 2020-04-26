@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chat.qs.mapper.UnknownQuestionMapper">
+
+	<resultMap id="baseResultMap" type="com.chat.qs.entity.UnknownQuestion">
+	    <result column="id" property="id"/>
+	    <result column="title" property="title"/>
+	    <result column="status" property="status"/>
+	    <result column="create_time" property="createTime"/>
+	    <result column="content" property="content"/>
+	</resultMap>
+
+	<sql id="baseColumn">
+	    id,
+	    title,
+	    status,
+	    create_time,
+	    content
+	</sql>
+
+	<sql id="baseCondition">
+		<where>
+		    <if test="id != null"> and id = #{id}</if>
+		    <if test="title != null"> and title = #{title}</if>
+		    <if test="status != null"> and status = #{status}</if>
+		    <if test="createTime != null"> and create_time = #{createTime}</if>
+		    <if test="content != null"> and content = #{content}</if>
+		</where>
+	</sql>
+
+	<select id="selectList" resultMap="baseResultMap" parameterType="com.chat.qs.vo.UnknownQuestionVo">
+		SELECT <include refid="baseColumn"></include>
+		from qa_unknown_question
+		<include refid="baseCondition"></include>
+	</select>
+
+	<select id="selectOne" resultMap="baseResultMap" parameterType="com.chat.qs.vo.UnknownQuestionVo">
+		SELECT <include refid="baseColumn"></include>
+		from qa_unknown_question
+		<include refid="baseCondition"></include>
+	</select>
+
+	<insert id="insert" parameterType="com.chat.qs.entity.UnknownQuestion">
+		insert into qa_unknown_question
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">id,</if>
+			<if test="title != null">title,</if>
+			<if test="status != null">status,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="content != null">content,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+		    <if test="id != null">#{id},</if>
+		    <if test="title != null">#{title},</if>
+		    <if test="status != null">#{status},</if>
+		    <if test="createTime != null">#{createTime},</if>
+		    <if test="content != null">#{content},</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="com.chat.qs.entity.UnknownQuestion">
+		update qa_unknown_question
+		<set>
+			<if test="id != null">id = #{id},</if>
+			<if test="title != null">title = #{title},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="content != null">content = #{content},</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.Long">
+		delete from qa_unknown_question
+		where id = #{id}
+	</delete>
+
+</mapper>

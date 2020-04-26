@@ -1,0 +1,19 @@
+-- 建表语句
+CREATE TABLE `qa_weather_type` (
+`id` BIGINT(20)  NOT NULL AUTO_INCREMENT ,
+`name` VARCHAR(32)  DEFAULT NULL  COMMENT '中文名',
+`en_name` VARCHAR(32)  DEFAULT NULL  COMMENT '英文名',
+`type` VARCHAR(32)  DEFAULT NULL  COMMENT '天气类型',
+`day_icon` VARCHAR(32)  DEFAULT NULL  COMMENT '白天天气图标',
+`night_icon` VARCHAR(32)  DEFAULT NULL  COMMENT '夜晚天气图标',
+PRIMARY KEY (`id`)
+)ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 新增字段
+ALTER TABLE `qa_weather_type` ADD COLUMN id BIGINT(20)  DEFAULT NULL ;
+ALTER TABLE `qa_weather_type` ADD COLUMN name VARCHAR(32)  DEFAULT NULL  COMMENT '中文名';
+ALTER TABLE `qa_weather_type` ADD COLUMN en_name VARCHAR(32)  DEFAULT NULL  COMMENT '英文名';
+ALTER TABLE `qa_weather_type` ADD COLUMN type VARCHAR(32)  DEFAULT NULL  COMMENT '天气类型';
+ALTER TABLE `qa_weather_type` ADD COLUMN day_icon VARCHAR(32)  DEFAULT NULL  COMMENT '白天天气图标';
+ALTER TABLE `qa_weather_type` ADD COLUMN night_icon VARCHAR(32)  DEFAULT NULL  COMMENT '夜晚天气图标';
+

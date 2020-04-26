@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Vendor styles -->
+    <link rel="stylesheet" href="/static/vendors/zwicon/zwicon.min.css">
+    <link rel="stylesheet" href="/static/vendors/animate/animate.min.css">
+    <link rel="stylesheet" href="/static/vendors/overlay-scrollbars/OverlayScrollbars.css">
+    <link rel="stylesheet" href="/static/vendors/jqTree/jqtree.html">
+    <link rel="stylesheet" href="/static/vendors/jqTree/jqtree.css">
+    <link rel="stylesheet" href="/static/vendors/weather/weather.css">
+    <link rel="stylesheet" href="/static/vendors/lightgallery/css/lightgallery.min.css">
+    <!-- App styles -->
+    <link rel="stylesheet" href="/static/vendors/app.min.css">
+    <style>
+        html,body,main,section,.content__inner,.messages{height: 100%;}
+        .messages__details>small{padding: 0;padding-bottom: 0.5rem;margin-top: 0;padding-right: 0.8rem;}
+        .messages__item--right>.messages__details>p{margin-right: 0.8rem;}
+        #send{width: 80px;float: right;margin-left: 8px;}
+        #close{width: 80px;float: right}
+        .messages__foot{padding: 5px;}
+        .messages__tools{}
+        .os-scrollbar-corner-resize-both{display: none}
+        .messages__item--middle{text-align: center;}
+        .messages__item--middle .messages__details{width: 100%;max-width: initial;}
+        .messages__item--right img{margin-right: 0.3rem;}
+        .messages__item {margin-bottom: 1rem;}
+        .badge{margin: 5px 1px;}
+        .messages__item--right .messages__details p::-moz-selection {
+            background: #E6A23C;
+        }
+        .messages__item--right .messages__details p::selection {
+            background: #E6A23C;
+        }
+        .messages__item--right .messages__details p::-webkit-selection {
+            background: #E6A23C;
+        }
+
+        /*天气卡片*/
+        .card-deck{margin: 1px;padding: 1px;}
+        .card-deck .card{margin: 1px;  padding:1px;}
+        .card-deck .card .card-body{padding:6px;}
+        .card-deck .card .card-body .card-title{font-size: 0.25rem;}
+        .card-deck .card .card-body .card-text{font-size: 12px;}
+        .card-deck .card .card-body .card-subtitle{margin-bottom: 1rem;}
+        .card-deck .card .card-body .card-subtitle i{font-size: 18px;margin-right: 5px;}
+        .card-deck .card .card-header{padding:14px;}
+        .card-deck .card .card-header i{font-size: 48px;}
+        .price-table__item--popular-selected{border: 1px solid #409EFF !important;}
+        .messages__details {max-width: 530px;}
+    </style>
+
+    <style>
+        /*渐变色背景*/
+        /*body {
+            margin: 0;
+            width: 100%;
+            height: 100vh;
+            font-family: "Exo", sans-serif;
+            color: #fff;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }*/
+        #canvas{
+            width: 100%;
+            height: auto/*默认全屏显示 可自己设置高度640px*/;
+            display: inline-block;
+            vertical-align: baseline;
+            position: absolute;
+            z-index: -1;
+            opacity: 0.2;
+        }
+    </style>
+</head>
+
+<body data-sa-theme="7" style="overflow: hidden">
+<iframe id="loadingIframe" src="/loading" style="position: absolute;z-index: 5;" width="100%" height="100%"></iframe>
+<canvas id="canvas"></canvas>
+<div class="background">
+    <div class="container-back" style="overflow: hidden;">
+        <svg id="back">
+            <radialGradient id="SVGID_1_" cx="0" cy="0" r="320.8304" gradientUnits="userSpaceOnUse">
+                <stop  offset="0" style="stop-color:#FFDE17;stop-opacity:0.7"/>
+                <stop  offset="1" style="stop-color:#FFF200;stop-opacity:0"/>
+            </radialGradient>
+            <path id="sunburst" style="fill:url(#SVGID_1_);" d="M0,319.7c-18.6,0-37.3-1.6-55.5-4.8L-7.8,41.4c5.1,0.9,10.6,0.9,15.7,0L56,314.8C37.6,318,18.8,319.7,0,319.7z
+	 M-160.8,276.6c-32.5-18.8-61.3-42.9-85.5-71.6L-34,26.2c3.4,4.1,7.4,7.4,12,10.1L-160.8,276.6z M161.3,276.4L22.1,36.2
+	c4.5-2.6,8.6-6,12-10.1l212.6,178.5C222.5,233.4,193.8,257.6,161.3,276.4z M-302.5,108.3C-315.4,73-321.9,36-322-1.8l277.6-0.5
+	c0,5.3,0.9,10.4,2.7,15.2L-302.5,108.3z M302.6,107.8L41.8,12.8c1.7-4.7,2.6-9.7,2.6-14.9c0-0.3,0-0.6,0-1H322l0-1.3l0,1.9
+	C322,35.4,315.5,72.5,302.6,107.8z M-41.8-17.5l-261-94.5c12.8-35.4,31.6-68,55.8-96.9L-34.1-30.8C-37.5-26.8-40.1-22.3-41.8-17.5z
+	 M41.7-17.7c-1.8-4.8-4.4-9.3-7.8-13.3l212-179.2c24.3,28.8,43.3,61.3,56.3,96.6L41.7-17.7z M-22.2-40.8l-139.6-240
+	c32.7-19,68.1-32,105.2-38.6L-8-46.1C-13-45.2-17.8-43.4-22.2-40.8z M22-40.9c-4.4-2.6-9.2-4.3-14.2-5.1l47.1-273.6
+	c37.2,6.4,72.7,19.2,105.4,38L22-40.9z"/>
+        </svg>
+        <nav style="display: none">
+            <ul>
+                <li><a id="button-none" class="active"><i class="wi wi-none"></i></a></li>
+                <li><a id="button-snow"><i class="wi wi-snow"></i></a></li>
+                <li><a id="button-wind"><i class="wi wi-strong-wind"></i></a></li>
+                <li><a id="button-rain"><i class="wi wi-rain"></i></a></li>
+                <li><a id="button-thunder"><i class="wi wi-lightning"></i></a></li>
+                <li><a id="button-sun"><i class="wi wi-day-sunny"></i></a></li>
+            </ul>
+        </nav>
+        <div id="card" class="weather" style="background-color: transparent;">
+            <svg id="inner">
+                <defs>
+                    <path id="leaf" d="M41.9,56.3l0.1-2.5c0,0,4.6-1.2,5.6-2.2c1-1,3.6-13,12-15.6c9.7-3.1,19.9-2,26.1-2.1c2.7,0-10,23.9-20.5,25 c-7.5,0.8-17.2-5.1-17.2-5.1L41.9,56.3z"/>
+                </defs>
+                <circle id="sun" style="fill: #F7ED47;display: none" cx="0" cy="0" r="50"/>
+                <g id="layer3"></g>
+                <g id="cloud3" class="cloud"></g>
+                <g id="layer2"></g>
+                <g id="cloud2" class="cloud"></g>
+                <g id="layer1"></g>
+                <g id="cloud1" class="cloud"></g>
+            </svg>
+            <div class="details" style="display: none">
+                <div class="temp">20<span>c</span></div>
+                <div class="right">
+                    <div id="date">Monday 22 August</div>
+                    <div id="summary"></div>
+                </div>
+            </div>
+        </div>
+        <svg id="outer"></svg>
+    </div>
+</div>
+
+
+<main class="main">
+    <div class="page-loader">
+        <div class="page-loader__spinner">
+            <svg viewBox="25 25 50 50">
+                <circle cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="themes">
+        <div class="scrollbar">
+            <a href="#" class="themes__item active" data-sa-value="1"><img src="/static/vendors/img/bg/1.jpg" alt=""></a>
+            <a href="#" class="themes__item" data-sa-value="2"><img src="/static/vendors/img/bg/2.jpg" alt=""></a>
+            <a href="#" class="themes__item" data-sa-value="3"><img src="/static/vendors/img/bg/3.jpg" alt=""></a>
+            <a href="#" class="themes__item" data-sa-value="4"><img src="/static/vendors/img/bg/4.jpg" alt=""></a>
+            <a href="#" class="themes__item" data-sa-value="5"><img src="/static/vendors/img/bg/5.jpg" alt=""></a>
+            <a href="#" class="themes__item" data-sa-value="6"><img src="/static/vendors/img/bg/6.jpg" alt=""></a>
+            <a href="#" class="themes__item" data-sa-value="7"><img src="/static/vendors/img/bg/7.jpg" alt=""></a>
+            <a href="#" class="themes__item" data-sa-value="8"><img src="/static/vendors/img/bg/8.jpg" alt=""></a>
+            <a href="#" class="themes__item" data-sa-value="9"><img src="/static/vendors/img/bg/9.jpg" alt=""></a>
+            <a href="#" class="themes__item" data-sa-value="10"><img src="/static/vendors/img/bg/10.jpg" alt=""></a>
+        </div>
+    </div>
+
+    <section class="content" style="padding: 30px;">
+        <div class="content__inner">
+            <div class="messages">
+                <div class="messages__sidebar">
+                    <div class="toolbar toolbar--inner" style="margin: 0;background: transparent;">
+                        <div class="card" style="padding: 0;margin: 0;height: 100%;width: 100%;background: transparent;box-shadow: 0 1px 5px rgba(0,0,0,0);">
+                            <div class="card-body" style="padding: 0;margin: 0;">
+                                <div class="tab-container">
+                                    <ul class="nav nav-tabs nav-fill" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-type="1" data-toggle="tab" href="#queryList" role="tab">常见问题</a>
+                                        </li>
+                                        <!--<li class="nav-item">
+                                            <a class="nav-link" data-type="2" data-toggle="tab" href="#category" role="tab">分类</a>
+                                        </li>-->
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-type="3" data-toggle="tab" href="#label" role="tab">问题标签</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="messages__search">
+                        <div class="form-group">
+                            <input id="search" type="text" class="form-control" placeholder="请输入...">
+                        </div>
+                    </div>
+
+                    <div class="scrollbar listview listview--hover tab-content">
+                        <div id="queryList" class="tab-pane active fade show" role="tabpanel">
+
+                        </div>
+                        <!--<div id="category" class="tab-pane fade" style="display: none;padding: 0 2.2rem;" role="tabpanel">
+                            <div class="treeview-expandeds"></div>
+                        </div>-->
+                        <div id="label" class="tab-pane fade" style="display: none;padding: 0 2.2rem;" role="tabpanel">
+                            <!--<a href="#" class="animated queryQuestion badge badge-primary" data="电脑">电脑</a>
+                            <a href="#" class="animated queryQuestion badge badge-secondary" data="新员工">新员工</a>
+                            <a href="#" class="animated queryQuestion badge badge-success" data="Success">Success</a>
+                            <a href="#" class="animated queryQuestion badge badge-danger" data="Danger">Danger</a>
+                            <a href="#" class="animated queryQuestion badge badge-warning" data="Warning">Warning</a>
+                            <a href="#" class="animated queryQuestion badge badge-info" data="Info">Info</a>
+                            <a href="#" class="animated queryQuestion badge badge-light" data="Light">Light</a>
+                            <a href="#" class="animated queryQuestion badge badge-dark" data="Dark">Dark</a>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="messages__body">
+                    <div class="messages__header">
+                        <div class="toolbar toolbar--inner mb-0">
+                            <div class="toolbar__label">小科智能机器人</div>
+
+                            <div class="actions toolbar__actions">
+                                <div class="dropdown actions__item">
+                                    <i class="actions__item zwicon-more-h" data-toggle="dropdown"></i>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item top-nav__themes" data-sa-action="aside-open" data-sa-target=".themes"><i class="zwicon-palette"></i>主题</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="toolbar__search">
+                                <input type="text" placeholder="Search...">
+                                <i class="toolbar__search__close zwicon-arrow-left" data-sa-action="toolbar-search-close"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="messages__content" style="padding: 1rem;">
+                        <div class="scrollbar" id="message">
+
+                        </div>
+                    </div>
+
+                    <!--<div class="messages__tools" style="height: 3.5rem;">
+                        <div class="toolbar" style="margin-bottom: 0;height: 3.5rem;background-color: rgba(0,0,0,.1);">
+                            <div class="actions" style="margin: 0 0 0 -20px;">
+                                <a href="#" class="actions__item zwicon-smile" title="分类" data-toggle="tooltip" data-placement="top"></a>
+                                <a href="#" class="actions__item zwicon-image" title="标签" data-toggle="tooltip" data-placement="top"></a>
+                                <a href="#" class="actions__item zwicon-folder" title="文件" data-toggle="tooltip" data-placement="top"></a>
+                            </div>
+                        </div>
+                    </div>-->
+
+                    <div class="messages__reply" style="height: 80px">
+                        <textarea id="text" class="messages__reply__text scrollbar" placeholder=""></textarea>
+                    </div>
+
+                    <div class="messages__foot">
+                        <button type="button" id="send" class="btn btn-theme-dark" data-trigger="manual" title="发送内容不能为空,请重新输入" data-toggle="tooltip" data-placement="top">发送</button>
+                        <button type="button" id="close" class="btn btn-theme">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Older IE warning message -->
+<!--[if IE]>
+<div class="ie-warning">
+    <h1>Warning!!</h1>
+    <p>You are using an outdated version of Internet Explorer, please upgrade to any of the following web browsers to access this website.</p>
+
+    <div class="ie-warning__downloads">
+        <a href="http://www.google.com/chrome">
+            <img src="img/browsers/chrome.png" alt="">
+        </a>
+
+        <a href="https://www.mozilla.org/en-US/firefox/new">
+            <img src="img/browsers/firefox.png" alt="">
+        </a>
+
+        <a href="http://www.opera.com">
+            <img src="img/browsers/opera.png" alt="">
+        </a>
+
+        <a href="https://support.apple.com/downloads/safari">
+            <img src="img/browsers/safari.png" alt="">
+        </a>
+
+        <a href="https://www.microsoft.com/en-us/windows/microsoft-edge">
+            <img src="img/browsers/edge.png" alt="">
+        </a>
+
+        <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">
+            <img src="img/browsers/ie.png" alt="">
+        </a>
+    </div>
+    <p>Sorry for the inconvenience!</p>
+</div>
+<![endif]-->
+
+<script src="/static/vendors/jquery/jquery.min.js"></script>
+<script src="/static/vendors/popper/popper.min.js"></script>
+<script src="/static/vendors/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/vendors/overlay-scrollbars/OverlayScrollbars.js"></script>
+<script src="/static/vendors/jqTree/tree.jquery.js"></script>
+<script src="/static/vendors/gaoliang/gaoliang.js"></script>
+<script src="/static/vendors/lazyFade.js"></script>
+
+<script src='/static/vendors/weather/TweenMax.min.js'></script>
+<script src='/static/vendors/weather/snap.svg-min.js'></script>
+<script src="/static/vendors/weather/weather.js"></script>
+<script src="/static/vendors/lightgallery/js/lightgallery-all.min.js"></script>
+<!-- App functions and actions -->
+<script src="/static/vendors/app.min.js"></script>
+<script src="/static/chat/chat.js"></script>
+<script src="/static/vendors/bg/js/bj.js"></script>
+</body>
+</html>

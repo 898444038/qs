@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chat.qs.mapper.LabelMapper">
+
+	<resultMap id="baseResultMap" type="com.chat.qs.entity.Label">
+	    <result column="id" property="id"/>
+	    <result column="label_name" property="labelName"/>
+	    <result column="create_time" property="createTime"/>
+	    <result column="del_flag" property="delFlag"/>
+	</resultMap>
+
+	<sql id="baseColumn">
+	    id,
+	    label_name,
+	    create_time,
+	    del_flag
+	</sql>
+
+	<sql id="baseCondition">
+		<where>
+		    <if test="id != null"> and id = #{id}</if>
+		    <if test="labelName != null and labelName!=''" > and label_name LIKE CONCAT('%', #{labelName} ,'%')</if>
+		    <if test="createTime != null"> and create_time = #{createTime}</if>
+		    <if test="delFlag != null"> and del_flag = #{delFlag}</if>
+		</where>
+	</sql>
+
+	<select id="selectList" resultMap="baseResultMap" parameterType="com.chat.qs.vo.LabelVo">
+		SELECT <include refid="baseColumn"></include>
+		from qa_label
+		<include refid="baseCondition"></include>
+	</select>
+
+	<select id="selectOne" resultMap="baseResultMap" parameterType="com.chat.qs.vo.LabelVo">
+		SELECT <include refid="baseColumn"></include>
+		from qa_label
+		<include refid="baseCondition"></include>
+	</select>
+
+	<insert id="insert" parameterType="com.chat.qs.entity.Label">
+		insert into qa_label
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null">id,</if>
+			<if test="labelName != null">label_name,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="delFlag != null">del_flag,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+		    <if test="id != null">#{id},</if>
+		    <if test="labelName != null">#{labelName},</if>
+		    <if test="createTime != null">#{createTime},</if>
+		    <if test="delFlag != null">#{delFlag},</if>
+		</trim>
+	</insert>
+
+	<update id="update" parameterType="com.chat.qs.entity.Label">
+		update qa_label
+		<set>
+			<if test="id != null">id = #{id},</if>
+			<if test="labelName != null">label_name = #{labelName},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="delFlag != null">del_flag = #{delFlag},</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.Long">
+		delete from qa_label
+		where id = #{id}
+	</delete>
+
+</mapper>
