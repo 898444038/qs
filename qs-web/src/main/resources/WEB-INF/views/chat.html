@@ -40,7 +40,7 @@
 
         /*天气卡片*/
         .card-deck{margin: 1px;padding: 1px;}
-        .card-deck .card{margin: 1px;  padding:1px;}
+        .card-deck .card{margin: 1px;  padding:1px;border:1px solid transparent;}
         .card-deck .card .card-body{padding:6px;}
         .card-deck .card .card-body .card-title{font-size: 0.25rem;}
         .card-deck .card .card-body .card-text{font-size: 12px;}
@@ -49,7 +49,9 @@
         .card-deck .card .card-header{padding:14px;}
         .card-deck .card .card-header i{font-size: 48px;}
         .price-table__item--popular-selected{border: 1px solid #409EFF !important;}
-        .messages__details {max-width: 530px;}
+        .price-table__item--popular-selected-other{border: 1px solid #fff !important;}
+        .messages__details {max-width: 540px;}
+        .card-deck .card:hover{background-color: #ffffff14;cursor: pointer;}
     </style>
 
     <style>
@@ -219,7 +221,7 @@
                 <div class="messages__body">
                     <div class="messages__header">
                         <div class="toolbar toolbar--inner mb-0">
-                            <div class="toolbar__label">小科智能机器人</div>
+                            <div class="toolbar__label">小科问答机器人</div>
 
                             <div class="actions toolbar__actions">
                                 <div class="dropdown actions__item">
@@ -231,7 +233,7 @@
                             </div>
 
                             <div class="toolbar__search">
-                                <input type="text" placeholder="Search...">
+                                <input type="text" placeholder="Search..." autocomplete="off">
                                 <i class="toolbar__search__close zwicon-arrow-left" data-sa-action="toolbar-search-close"></i>
                             </div>
                         </div>

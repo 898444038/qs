@@ -274,7 +274,12 @@ public class WordHelper {
      * @param text
      * @return
      */
-    public SocketMessage seg(String text){
+    public SocketMessage seg(SocketMessage receiveMessage){
+        String text = receiveMessage.getData().toString();
+        if(receiveMessage.getMode()!=0){
+            text = text + receiveMessage.getMessage();
+        }
+
         init();
         List<Word> list = segWord(text);
         Set<String> wordSet = new HashSet<>();
@@ -429,15 +434,19 @@ public class WordHelper {
 
             }
         }
-        //筛选匹配的问题集合，去除 只要有一种算法分值为0的问题
+        //筛选匹配的问题集合，去除 只要有一种算法分值为0的（普通）问题
         Iterator<Question> iterator = questionList.iterator();
         while(iterator.hasNext()){
-            QuestionScore score = iterator.next().getQuestionScore();
-            if( score.getCosineTextSimilarity()==0||score.getSimpleTextSimilarity()==0||
-                score.getEditDistanceTextSimilarity()==0||score.getJaccardTextSimilarity()==0||
-                score.getJaroWinklerDistanceTextSimilarity()==0||score.getSrensenDiceCoefficientTextSimilarity()==0
-            ){
-                iterator.remove();
+            Question question = iterator.next();
+            //排除特殊问题
+            if(question.getType()==0){
+                QuestionScore score = question.getQuestionScore();
+                if(score.getCosineTextSimilarity()==0||score.getSimpleTextSimilarity()==0||
+                   score.getEditDistanceTextSimilarity()==0||score.getJaccardTextSimilarity()==0||
+                   score.getJaroWinklerDistanceTextSimilarity()==0||score.getSrensenDiceCoefficientTextSimilarity()==0
+                ){
+                    iterator.remove();
+                }
             }
         }
 

@@ -1,6 +1,7 @@
 $(document).ready(function(){
     //0：问答模式 1：互动模式
     var mode = 0;
+    var modeMessage = "";
 
     var treeList = [];
     var cateList = [];
@@ -70,6 +71,9 @@ $(document).ready(function(){
     });
     
     function handleMessage(json) {
+        modeMessage = "";
+        mode = 0;
+
         var str = "";
         if(json.type == 'TEXT'){
             str = json.data;
@@ -86,22 +90,28 @@ $(document).ready(function(){
         }else if(json.type == 'NONE'){
             str = json.data;
         }else if(json.type == 'WEATHER'){
-            str = json.data;
-            $("#button-"+json.message).click();
-            if(json.message == 'wind'){
-                $(".weather #cloud1").css("fill","#efefef22");
-                $(".thunder .weather #cloud1").css("fill","#9FA4AD22");
-                $(".weather #cloud2").css("fill","#E6E6E622");
-                $(".thunder .weather #cloud2").css("fill","#8B8E9822");
-                $(".weather #cloud3").css("fill","#D5D5D522");
-                $(".thunder .weather #cloud3").css("fill","#7B798822");
+            if(json.mode == 0){
+                str = json.data;
+                $("#button-"+json.message).click();
+                if(json.message == 'wind'){
+                    $(".weather #cloud1").css("fill","#efefef33");
+                    $(".thunder .weather #cloud1").css("fill","#9FA4AD33");
+                    $(".weather #cloud2").css("fill","#E6E6E633");
+                    $(".thunder .weather #cloud2").css("fill","#8B8E9833");
+                    $(".weather #cloud3").css("fill","#D5D5D533");
+                    $(".thunder .weather #cloud3").css("fill","#7B798833");
+                }else{
+                    $(".weather #cloud1").css("fill","#efefef03");
+                    $(".thunder .weather #cloud1").css("fill","#9FA4AD03");
+                    $(".weather #cloud2").css("fill","#E6E6E603");
+                    $(".thunder .weather #cloud2").css("fill","#8B8E9803");
+                    $(".weather #cloud3").css("fill","#D5D5D503");
+                    $(".thunder .weather #cloud3").css("fill","#7B798803");
+                }
             }else{
-                $(".weather #cloud1").css("fill","#efefef03");
-                $(".thunder .weather #cloud1").css("fill","#9FA4AD03");
-                $(".weather #cloud2").css("fill","#E6E6E603");
-                $(".thunder .weather #cloud2").css("fill","#8B8E9803");
-                $(".weather #cloud3").css("fill","#D5D5D503");
-                $(".thunder .weather #cloud3").css("fill","#7B798803");
+                str = "<p>"+json.message+"</p>";
+                modeMessage = json.data;
+                mode = json.mode;
             }
         }else if(json.type == 'IMAGE'){
             //str = json.data;
@@ -196,6 +206,8 @@ $(document).ready(function(){
         if(socket.readyState == WebSocket.OPEN){
             var json = {};
             json.type = type;
+            json.mode = mode;
+            json.message = modeMessage;
             if(type=='LABEL' || type=='CATE'){
                 json.data = message.data;
 
@@ -391,6 +403,11 @@ $(document).ready(function(){
 
     });
 
+    $(document).on("click",".card-deck .card",function () {
+        $(this).addClass("price-table__item--popular-selected-other").siblings(".card").removeClass("price-table__item--popular-selected-other");
+        var type = $(this).attr("data-type");
+        $("#button-"+type).click();
+    });
 
     function getFormatDate() {
         var date = new Date();

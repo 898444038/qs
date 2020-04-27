@@ -13,40 +13,43 @@ public class SocketMessage {
 
     private Object data;
 
+    private Integer mode = 0;//0：问答模式 1：互动模式
+
     private SocketMessageType type;
 
     public SocketMessage() {
     }
 
-    public SocketMessage(Integer code, String message, Object data, SocketMessageType type) {
+    public SocketMessage(Integer code, String message, Object data,Integer mode, SocketMessageType type) {
         this.code = code;
         this.message = message;
         this.data = data;
+        this.mode = mode;
         this.type = type;
     }
 
     public static SocketMessage download(Object data,String messgae){
-        return new SocketMessage(200,messgae,data,SocketMessageType.DOWNLOAD);
+        return new SocketMessage(200,messgae,data,0,SocketMessageType.DOWNLOAD);
     }
     public static SocketMessage text(Object data){
-        return new SocketMessage(200,null,data,SocketMessageType.TEXT);
+        return new SocketMessage(200,null,data,0,SocketMessageType.TEXT);
     }
     public static SocketMessage image(Object data) {
-        return new SocketMessage(200,null,data,SocketMessageType.IMAGE);
+        return new SocketMessage(200,null,data,0,SocketMessageType.IMAGE);
     }
     public static SocketMessage link(Object data){
-        return new SocketMessage(200,null,data,SocketMessageType.LINK);
+        return new SocketMessage(200,null,data,0,SocketMessageType.LINK);
     }
-    public static SocketMessage weather(Object data,String message){
-        return new SocketMessage(200,message,data,SocketMessageType.WEATHER);
+    public static SocketMessage weather(Object data,String message,Integer mode){
+        return new SocketMessage(200,message,data,mode,SocketMessageType.WEATHER);
     }
 
     public static SocketMessage fail(){
-        return new SocketMessage(500,null,null,SocketMessageType.NONE);
+        return new SocketMessage(500,null,null,0,SocketMessageType.NONE);
     }
 
     public static SocketMessage fail(String message){
-        return new SocketMessage(500,message,null,SocketMessageType.NONE);
+        return new SocketMessage(500,message,null,0,SocketMessageType.NONE);
     }
 
     public Integer getCode() {
@@ -81,4 +84,11 @@ public class SocketMessage {
         this.message = message;
     }
 
+    public Integer getMode() {
+        return mode;
+    }
+
+    public void setMode(Integer mode) {
+        this.mode = mode;
+    }
 }

@@ -75,9 +75,11 @@ public class SpecialHelper {
         List<City> cityList = redissonService.getRBucket(RedisConstant.CITY_LIST_KEY);
         List<WeatherType> weatherTypeList = redissonService.getRBucket(RedisConstant.WEATHER_LIST_KEY);
         City city = null;
+        String w = null;
         for (Word word : lists){
+            w = word.getText().replaceAll("天气","");
             for(City c : cityList){
-                if(c.getName().equals(word.getText())){
+                if(c.getName().equals(w)){
                     city = c;
                 }
             }
@@ -102,7 +104,7 @@ public class SpecialHelper {
                         wt = weatherType;
                     }
                 }
-                sb.append("<div class=\"card\">");
+                sb.append("<div class=\"card\" data-type='"+wt.getType()+"'>");
                 sb.append("<div class=\"card-header\"><i class='"+wt.getDayIcon()+"'></i></div>");
                 sb.append("<div class=\"card-body\">");
                 sb.append("<h4 class=\"card-title\">"+yesterday.getDate()+"</h4>");
@@ -111,14 +113,6 @@ public class SpecialHelper {
                 sb.append("</div>");
                 sb.append("</div>");
 
-                /*sb.append("昨天：").append(yesterday.getDate()).append(" ")
-                    .append(yesterday.getLow().split(" ")[1]).append(" ").append(yesterday.getHigh().split(" ")[1]).append(" ");
-                if(wt!=null){
-                    sb.append("<i class='"+wt.getDayIcon()+"'></i>");
-                }
-                sb.append(yesterday.getType()).append(" ")
-                        .append(yesterday.getFx()).append(StringUtils.getCDATA(yesterday.getFl()))
-                        .append("<br>");*/
                 wt=null;
                 List<Forecast> forecastList = weather.getForecast();
                 AtomicInteger i = new AtomicInteger();
@@ -128,20 +122,12 @@ public class SpecialHelper {
                             wt = weatherType;
                         }
                     }
-                    /*sb.append("预测：").append(forecast.getDate()).append(" ")
-                        .append(forecast.getLow().split(" ")[1]).append(" ").append(forecast.getHigh().split(" ")[1]).append(" ");
 
-                    if(wt!=null){
-                        sb.append("<i class='"+wt.getDayIcon()+"'></i>");
-                    }
-                    sb.append(forecast.getType()).append(" ")
-                        .append(forecast.getFengxiang()).append(StringUtils.getCDATA(forecast.getFengli()))
-                        .append("<br>");*/
                     String selected = "";
                     if(i.incrementAndGet() == 1){
                         selected = "price-table__item--popular-selected";
                     }
-                    sb.append("<div class='card "+selected+"'>");
+                    sb.append("<div class='card "+selected+"' data-type='"+wt.getType()+"'>");
                     sb.append("<div class=\"card-header\"><i class='"+wt.getDayIcon()+"'></i></div>");
                     sb.append("<div class=\"card-body\">");
                     sb.append("<h4 class=\"card-title\">"+forecast.getDate()+"</h4>");
@@ -159,8 +145,10 @@ public class SpecialHelper {
                     }
                 }
                 sb.append("</div>");
-                return SocketMessage.weather(sb.toString(),type);
+                return SocketMessage.weather(sb.toString(),type,0);
             }
+        }else{
+            return SocketMessage.weather("天气","您要查询哪个城市天气呢?",1);
         }
         return SocketMessage.text(CommonLanguage.NOT_FOUND_QUESTION.getDesc());
     }

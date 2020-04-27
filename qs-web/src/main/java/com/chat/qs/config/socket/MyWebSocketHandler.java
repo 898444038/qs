@@ -12,6 +12,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
+import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +53,14 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
                 System.out.println(newUri);
                 request.setUri(newUri);
             }
+
+            //客户端Ip
+            String clientIP = request.headers().get("X-Forwarded-For");
+            if (clientIP == null) {
+                InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
+                clientIP = insocket.getAddress().getHostAddress();
+            }
+            System.out.println("接收到的参数是："+JSON.toJSONString(paramMap)+",clientIP:"+clientIP);
         }else if(msg instanceof TextWebSocketFrame){
             Gson gson = new Gson();
             ChannelId channelId = ctx.channel().id();
@@ -66,7 +75,7 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
             }else if(receiveMessage.getType().equals(SocketMessageType.CATE)){
                 message = WordHelper.getInstance().cate(Long.valueOf(receiveMessage.getData().toString()));
             }else{
-                message = WordHelper.getInstance().seg(receiveMessage.getData().toString());
+                message = WordHelper.getInstance().seg(receiveMessage);
             }
             sendMessage(channelId,gson.toJson(message));
             //todo 保存会话、记录日志

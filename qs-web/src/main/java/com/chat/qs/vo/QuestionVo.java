@@ -12,7 +12,7 @@ public class QuestionVo extends Question {
 
     private Integer pageNo = 1;
 
-    private Integer pageSize = 10;
+    private Integer pageSize = 20;
 
     private Integer fromIndex;
 
