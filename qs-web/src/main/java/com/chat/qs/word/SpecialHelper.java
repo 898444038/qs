@@ -42,10 +42,10 @@ public class SpecialHelper {
     }
 
     //处理特殊问题
-    public SocketMessage handle(Question question,String text) {
+    public SocketMessage handle(Question question,String text,SocketMessage receiveMessage) {
         Integer type = question.getType();
         if(QuestionType.weather.getCode().equals(type)){
-            return handleWeather(text);
+            return handleWeather(text,receiveMessage);
         }else if(QuestionType.deposit_change.getCode().equals(type)){
             return handleDepositChange(text);
         }else if(QuestionType.today_deposit.getCode().equals(type)){
@@ -69,7 +69,7 @@ public class SpecialHelper {
     }
 
     //处理天气
-    private SocketMessage handleWeather(String text) {
+    private SocketMessage handleWeather(String text,SocketMessage receiveMessage) {
         List<Word> lists = WordSegmenter.segWithStopWords(text);
         RedissonService redissonService = SpringBeanUtil.getBean(RedissonService.class);
         List<City> cityList = redissonService.getRBucket(RedisConstant.CITY_LIST_KEY);
@@ -148,6 +148,9 @@ public class SpecialHelper {
                 return SocketMessage.weather(sb.toString(),type,0);
             }
         }else{
+            if(receiveMessage.getMode()==1){
+                return SocketMessage.weather("天气","未找到城市["+receiveMessage.getData()+"],您要查询哪个城市天气呢?",1);
+            }
             return SocketMessage.weather("天气","您要查询哪个城市天气呢?",1);
         }
         return SocketMessage.text(CommonLanguage.NOT_FOUND_QUESTION.getDesc());

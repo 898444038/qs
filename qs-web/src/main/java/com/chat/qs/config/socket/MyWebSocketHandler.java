@@ -3,6 +3,7 @@ package com.chat.qs.config.socket;
 import com.alibaba.fastjson.JSON;
 import com.chat.qs.enums.SocketMessageType;
 import com.chat.qs.utils.SocketMessage;
+import com.chat.qs.word.StudyHelper;
 import com.chat.qs.word.WordHelper;
 import com.chat.qs.word.qa.QuestionAnswerHelper;
 import com.google.gson.Gson;
@@ -70,12 +71,16 @@ public class MyWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocke
             System.out.println("客户端收到服务器数据：" + text);
             SocketMessage receiveMessage = gson.fromJson(text,SocketMessage.class);
             SocketMessage message = null;
-            if(receiveMessage.getType().equals(SocketMessageType.LABEL)){
-                message = WordHelper.getInstance().label(Long.valueOf(receiveMessage.getData().toString()));
-            }else if(receiveMessage.getType().equals(SocketMessageType.CATE)){
-                message = WordHelper.getInstance().cate(Long.valueOf(receiveMessage.getData().toString()));
+            if(receiveMessage.getMode()==2){//学习模式
+                message = StudyHelper.getInstance().study(receiveMessage);
             }else{
-                message = WordHelper.getInstance().seg(receiveMessage);
+                if(receiveMessage.getType().equals(SocketMessageType.LABEL)){
+                    message = WordHelper.getInstance().label(Long.valueOf(receiveMessage.getData().toString()));
+                }else if(receiveMessage.getType().equals(SocketMessageType.CATE)){
+                    message = WordHelper.getInstance().cate(Long.valueOf(receiveMessage.getData().toString()));
+                }else{
+                    message = WordHelper.getInstance().seg(receiveMessage);
+                }
             }
             sendMessage(channelId,gson.toJson(message));
             //todo 保存会话、记录日志

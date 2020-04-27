@@ -1,6 +1,7 @@
 $(document).ready(function(){
     //0：问答模式 1：互动模式
     var mode = 0;
+    var id = null;
     var modeMessage = "";
 
     var treeList = [];
@@ -49,6 +50,13 @@ $(document).ready(function(){
         textVal = textVal.replace(/\ +/g,"");//去掉空格
         textVal = textVal.replace(/[\r\n]/g,"");//去掉回车换行
         if(textVal){
+            if(textVal=="进入学习模式"){
+                mode = 2;
+                id = null;
+            }else if(textVal=="退出学习模式"){
+                mode = 0;
+                id = null;
+            }
             sendText(textVal);
         }else{
             //发送内容不能为空,请重新输入
@@ -128,6 +136,8 @@ $(document).ready(function(){
         }else{
             str = json.data;
         }
+        mode = json.mode;
+        id = json.id;
         return str;
     }
     
@@ -207,6 +217,7 @@ $(document).ready(function(){
             var json = {};
             json.type = type;
             json.mode = mode;
+            json.id = id;
             json.message = modeMessage;
             if(type=='LABEL' || type=='CATE'){
                 json.data = message.data;
@@ -407,6 +418,22 @@ $(document).ready(function(){
         $(this).addClass("price-table__item--popular-selected-other").siblings(".card").removeClass("price-table__item--popular-selected-other");
         var type = $(this).attr("data-type");
         $("#button-"+type).click();
+
+        if(type == 'wind'){
+            $(".weather #cloud1").css("fill","#efefef33");
+            $(".thunder .weather #cloud1").css("fill","#9FA4AD33");
+            $(".weather #cloud2").css("fill","#E6E6E633");
+            $(".thunder .weather #cloud2").css("fill","#8B8E9833");
+            $(".weather #cloud3").css("fill","#D5D5D533");
+            $(".thunder .weather #cloud3").css("fill","#7B798833");
+        }else{
+            $(".weather #cloud1").css("fill","#efefef03");
+            $(".thunder .weather #cloud1").css("fill","#9FA4AD03");
+            $(".weather #cloud2").css("fill","#E6E6E603");
+            $(".thunder .weather #cloud2").css("fill","#8B8E9803");
+            $(".weather #cloud3").css("fill","#D5D5D503");
+            $(".thunder .weather #cloud3").css("fill","#7B798803");
+        }
     });
 
     function getFormatDate() {

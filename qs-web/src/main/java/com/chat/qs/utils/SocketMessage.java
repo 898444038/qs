@@ -7,13 +7,15 @@ import com.chat.qs.enums.SocketMessageType;
  */
 public class SocketMessage {
 
+    private Integer id;
+
     private Integer code;
 
     private String message;
 
     private Object data;
 
-    private Integer mode = 0;//0：问答模式 1：互动模式
+    private Integer mode = 0;//0：问答模式 1：互动模式  2：学习模式
 
     private SocketMessageType type;
 
@@ -28,7 +30,16 @@ public class SocketMessage {
         this.type = type;
     }
 
-    public static SocketMessage download(Object data,String messgae){
+    public SocketMessage(Integer id, Integer code, String message, Object data, Integer mode, SocketMessageType type) {
+        this.id = id;
+        this.code = code;
+        this.message = message;
+        this.data = data;
+        this.mode = mode;
+        this.type = type;
+    }
+
+    public static SocketMessage download(Object data, String messgae){
         return new SocketMessage(200,messgae,data,0,SocketMessageType.DOWNLOAD);
     }
     public static SocketMessage text(Object data){
@@ -43,7 +54,9 @@ public class SocketMessage {
     public static SocketMessage weather(Object data,String message,Integer mode){
         return new SocketMessage(200,message,data,mode,SocketMessageType.WEATHER);
     }
-
+    public static SocketMessage study(Integer id,String message, Object data,Integer mode) {
+        return new SocketMessage(id,200,message,data,mode,SocketMessageType.TEXT);
+    }
     public static SocketMessage fail(){
         return new SocketMessage(500,null,null,0,SocketMessageType.NONE);
     }
@@ -91,4 +104,14 @@ public class SocketMessage {
     public void setMode(Integer mode) {
         this.mode = mode;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+
 }

@@ -6,6 +6,7 @@ package com.chat.qs.constant;
 public class RedisConstant {
 
     public static final String QUESTION_LIST_KEY = "QUESTION_LIST_KEY";
+    public static final String QUESTION_STUDY_LIST_KEY = "QUESTION_STUDY_LIST_KEY";
 
     public static final String ANSWER_LIST_KEY = "ANSWER_LIST_KEY";
 

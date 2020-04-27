@@ -75,10 +75,9 @@
 		<include refid="baseCondition"></include>
 	</select>
 
-	<insert id="insert" parameterType="com.chat.qs.entity.Question">
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.chat.qs.entity.Question">
 		insert into qa_question
 		<trim prefix="(" suffix=")" suffixOverrides="," >
-			<if test="id != null">id,</if>
 			<if test="title != null">title,</if>
 			<if test="type != null">type,</if>
 			<if test="createTime != null">create_time,</if>
@@ -86,7 +85,6 @@
 			<if test="cateId != null">cate_id,</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides="," >
-		    <if test="id != null">#{id},</if>
 		    <if test="title != null">#{title},</if>
 		    <if test="type != null">#{type},</if>
 		    <if test="createTime != null">#{createTime},</if>

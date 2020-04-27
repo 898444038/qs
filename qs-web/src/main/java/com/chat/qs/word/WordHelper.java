@@ -271,7 +271,7 @@ public class WordHelper {
 
     /**
      * 拆词
-     * @param text
+     * @param receiveMessage
      * @return
      */
     public SocketMessage seg(SocketMessage receiveMessage){
@@ -317,7 +317,7 @@ public class WordHelper {
         }else{
             //特殊问题
             if(!qList.get(0).getType().equals(QuestionType.common.getCode())){
-                return SpecialHelper.getInstance().handle(qList.get(0),text);
+                return SpecialHelper.getInstance().handle(qList.get(0),text,receiveMessage);
             }
         }
 
