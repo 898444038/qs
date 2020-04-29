@@ -87,7 +87,7 @@ public class StudyHelper {
                         answerService.insert(answer);
 
                         redissonService.deleteRBucket(RedisConstant.QUESTION_STUDY_LIST_KEY);
-                        redissonService.deleteRBucket(RedisConstant.QUESTION_LIST_KEY);
+                        WordHelper.getInstance().initWord();
                         return SocketMessage.study(question.getId().intValue(),"","已学习该问题，退出学习模式！",0);
                     }
                 }
