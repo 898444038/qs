@@ -26,7 +26,7 @@
 
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jsoup.version>1.7.2</jsoup.version>
+		<jsoup.version>1.15.3</jsoup.version>
 		<slf4j-api.version>1.6.4</slf4j-api.version>
 		<logback-classic.version>0.9.28</logback-classic.version>
 		<httpclient.version>3.1</httpclient.version>
